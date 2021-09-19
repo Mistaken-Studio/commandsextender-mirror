@@ -34,7 +34,7 @@ namespace Mistaken.CommandsExtender.Commands
             Tried.Add(player.UserId);
             if (UnityEngine.Random.Range(1, 101) < 6 && player.Position.y < 800)
             {
-                player.CufferId = -1;
+                player.Cuffer = null;
                 player.EnableEffect<CustomPlayerEffects.Amnesia>(10);
                 player.EnableEffect<CustomPlayerEffects.Disabled>(10);
                 player.EnableEffect<CustomPlayerEffects.Concussed>(10);
@@ -48,8 +48,7 @@ namespace Mistaken.CommandsExtender.Commands
                 player.EnableEffect<CustomPlayerEffects.Disabled>(15);
                 player.EnableEffect<CustomPlayerEffects.Concussed>(30);
                 player.EnableEffect<CustomPlayerEffects.Bleeding>();
-                Player cuffer = RealPlayers.Get(player.CufferId);
-                cuffer.SetGUI("try", PseudoGUIPosition.BOTTOM, $"<b>!! {player.Nickname} <color=yellow>próbował</color> się rozkuć !!</b>", 10);
+                player.Cuffer.SetGUI("try", PseudoGUIPosition.BOTTOM, $"<b>!! {player.Nickname} <color=yellow>próbował</color> się rozkuć !!</b>", 10);
                 success = true;
                 return new string[] { "Nie udało ci się" };
             }

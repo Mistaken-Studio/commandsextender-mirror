@@ -32,7 +32,6 @@ namespace Mistaken.CommandsExtender
         {
             Exiled.Events.Handlers.Server.RestartingRound += this.Handle(() => this.Server_RestartingRound(), "RoundRestart");
             Exiled.Events.Handlers.Player.ChangingRole += this.Handle<Exiled.Events.EventArgs.ChangingRoleEventArgs>((ev) => this.Player_ChangingRole(ev));
-            Exiled.Events.Handlers.Server.RoundStarted += this.Handle(() => this.Server_RoundStarted(), "RoundStart");
             Exiled.Events.Handlers.Player.Dying += this.Handle<Exiled.Events.EventArgs.DyingEventArgs>((ev) => this.Player_Dying(ev));
         }
 
@@ -40,32 +39,7 @@ namespace Mistaken.CommandsExtender
         {
             Exiled.Events.Handlers.Server.RestartingRound -= this.Handle(() => this.Server_RestartingRound(), "RoundRestart");
             Exiled.Events.Handlers.Player.ChangingRole -= this.Handle<Exiled.Events.EventArgs.ChangingRoleEventArgs>((ev) => this.Player_ChangingRole(ev));
-            Exiled.Events.Handlers.Server.RoundStarted -= this.Handle(() => this.Server_RoundStarted(), "RoundStart");
             Exiled.Events.Handlers.Player.Dying -= this.Handle<Exiled.Events.EventArgs.DyingEventArgs>((ev) => this.Player_Dying(ev));
-        }
-
-        private void Server_RoundStarted()
-        {
-            this.CallDelayed(
-                5,
-                () =>
-                {
-                    foreach (var item in SwapSCPCommand.SwapCooldown.ToArray())
-                    {
-                        if (RealPlayers.List.Any(p => p.UserId == item.Key))
-                        {
-                            var player = RealPlayers.List.First(p => p.UserId == item.Key);
-                            if (player.Team == Team.SCP)
-                            {
-                                if (item.Value == 1)
-                                    SwapSCPCommand.SwapCooldown.Remove(player.UserId);
-                                else
-                                    SwapSCPCommand.SwapCooldown[player.UserId]--;
-                            }
-                        }
-                    }
-                },
-                "RoundStart");
         }
 
         private void Player_ChangingRole(Exiled.Events.EventArgs.ChangingRoleEventArgs ev)
@@ -77,13 +51,12 @@ namespace Mistaken.CommandsExtender
         {
             if (!ev.Target.IsReadyPlayer())
                 return;
-            if (ev.Target.Role == RoleType.NtfCommander)
+            if (ev.Target.Role == RoleType.NtfCaptain)
                 TeslaOnCommand.AlreadyUsed.Remove(ev.Target.UserId);
         }
 
         private void Server_RestartingRound()
         {
-            SwapSCPCommand.AlreadyChanged.Clear();
             TeslaOnCommand.AlreadyUsed.Clear();
         }
     }

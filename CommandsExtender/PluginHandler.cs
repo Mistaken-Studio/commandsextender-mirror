@@ -26,7 +26,7 @@ namespace Mistaken.CommandsExtender
         public override PluginPriority Priority => PluginPriority.Default;
 
         /// <inheritdoc/>
-        public override Version RequiredExiledVersion => new Version(2, 11, 0);
+        public override Version RequiredExiledVersion => new Version(3, 0, 0, 84);
 
         /// <inheritdoc/>
         public override void OnEnabled()

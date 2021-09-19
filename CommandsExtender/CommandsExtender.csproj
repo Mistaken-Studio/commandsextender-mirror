@@ -55,12 +55,10 @@
   <ItemGroup>
     <Compile Include="CommandsHandler.cs" />
     <Compile Include="Commands\HubCommand.cs" />
-    <Compile Include="Commands\SwapSCPCommand.cs" />
     <Compile Include="Commands\TeslaOffCommand.cs" />
     <Compile Include="Commands\TeslaOnCommand.cs" />
     <Compile Include="Commands\TimerCommand.cs" />
     <Compile Include="Commands\TryUnHandcuffCommand.cs" />
-    <Compile Include="Commands\UnloadGunCommand.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="PluginHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

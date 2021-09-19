@@ -23,7 +23,7 @@ namespace Mistaken.CommandsExtender.Commands
         {
             success = false;
             var player = sender.GetPlayer();
-            if (player.Role != RoleType.NtfCommander)
+            if (player.Role != RoleType.NtfCaptain)
                 return new string[] { "Nie jesteś dowódcą" };
             if (API.Utilities.Map.TeslaMode == API.Utilities.TeslaMode.ENABLED)
                 return new string[] { "Tesle są już włączone" };
