@@ -31,10 +31,10 @@ namespace Mistaken.CommandsExtender.Commands
                     this.GetUsage(),
                     "Server:",
 
-                    // "1 - Ranked",
-                    "2 - RP",
+                    "1 - RP",
+                    "2 - RP 2",
                     "3 - Casual",
-                    "4 - RP 2",
+                    "4 - Memes",
                 };
             }
 
