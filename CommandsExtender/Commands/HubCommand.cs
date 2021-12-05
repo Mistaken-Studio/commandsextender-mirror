@@ -5,8 +5,10 @@
 // -----------------------------------------------------------------------
 
 using CommandSystem;
+using Mirror;
 using Mistaken.API.Commands;
 using Mistaken.API.Extensions;
+using RoundRestarting;
 
 namespace Mistaken.CommandsExtender.Commands
 {
@@ -39,7 +41,7 @@ namespace Mistaken.CommandsExtender.Commands
             }
 
             var player = sender.GetPlayer();
-            Exiled.API.Extensions.MirrorExtensions.SendFakeTargetRpc(player, player.Connection.identity, typeof(PlayerStats), nameof(PlayerStats.RpcRoundrestartRedirect), new object[] { 0.1f, (ushort)(7776 + serverId) });
+            player.Connection.Send<RoundRestartMessage>(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0f, (ushort)(7776 + serverId), true));
             success = true;
             return new string[] { "Redirecting" };
         }
