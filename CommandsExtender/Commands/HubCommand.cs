@@ -41,7 +41,7 @@ namespace Mistaken.CommandsExtender.Commands
             }
 
             var player = sender.GetPlayer();
-            player.Connection.Send<RoundRestartMessage>(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0f, (ushort)(7776 + serverId), true));
+            player.Connection.Send<RoundRestartMessage>(new RoundRestartMessage(RoundRestartType.RedirectRestart, 1f, (ushort)(7776 + serverId), true));
             success = true;
             return new string[] { "Redirecting" };
         }
