@@ -14,7 +14,7 @@ using Mistaken.API.GUI;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    // [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
     internal class TryUnHandcuffCommand : IBetterCommand
     {
         public override string Description => "Try your luck";
