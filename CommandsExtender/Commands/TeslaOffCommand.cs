@@ -11,7 +11,7 @@ using Mistaken.API.Extensions;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    // [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
     internal class TeslaOffCommand : IBetterCommand
     {
         public override string Description => "Disabled all tesla gates";
