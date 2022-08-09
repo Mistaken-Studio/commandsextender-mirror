@@ -23,8 +23,8 @@ namespace Mistaken.CommandsExtender.Commands
         {
             success = false;
             var player = sender.GetPlayer();
-            if (player.Role != RoleType.NtfCaptain)
-                return new string[] { "Nie jesteś dowódcą" };
+            if (player.Role.Type != RoleType.NtfCaptain)
+                return new string[] { "Nie jesteś kapitanem" };
             if (API.Utilities.Map.TeslaMode == API.Utilities.TeslaMode.ENABLED)
                 return new string[] { "Tesle są już włączone" };
             if (AlreadyUsed.Contains(player.UserId))
