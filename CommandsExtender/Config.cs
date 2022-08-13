@@ -9,8 +9,7 @@ using Mistaken.Updater.Config;
 
 namespace Mistaken.CommandsExtender
 {
-    /// <inheritdoc/>
-    public class Config : IAutoUpdatableConfig
+    internal class Config : IAutoUpdatableConfig
     {
         /// <inheritdoc/>
         public bool IsEnabled { get; set; } = true;

@@ -58,12 +58,14 @@
     <Compile Include="Commands\CheckpointOpenCommand.cs" />
     <Compile Include="Commands\HubCommand.cs" />
     <Compile Include="Commands\TeslaOffCommand.cs" />
+    <Compile Include="Commands\HealPlayerCommand.cs" />
     <Compile Include="Commands\TeslaOnCommand.cs" />
     <Compile Include="Commands\TimerCommand.cs" />
     <Compile Include="Commands\TryUnHandcuffCommand.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="PluginHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Translations.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
