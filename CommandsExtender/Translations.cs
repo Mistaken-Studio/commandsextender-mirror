@@ -15,5 +15,9 @@ namespace Mistaken.CommandsExtender
         public string HealingCancelledMessage { get; set; } = "<color=red><size=150%>Healing canceled</size></color>";
 
         public string HealingCancelledHealerMessage { get; set; } = "<color=red><size=150%>Healing canceled</size></color><br>Player <color=yellow>moved</color>";
+
+        public string HealingSuccessHealerMessage { get; set; } = "You have <color=green>healed</color> <color=yellow>{0}</color>";
+
+        public string HealingSuccessHealedMessage { get; set; } = "You have been <color=green>healed</color> by <color=yellow>{0}</color>";
     }
 }

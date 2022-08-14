@@ -41,14 +41,16 @@ namespace Mistaken.CommandsExtender.Commands
             else
                 Cooldowns.Remove(player);
 
-            var nearby = RealPlayers.List.Where(x => Vector3.Distance(x.Position, player.Position) < 5).FirstOrDefault();
-            if (nearby == default)
-                return new string[] { "Nie ma żadnego gracza w pobliżu" };
-            if ((nearby.MaxHealth - nearby.Health) < 1)
+            Player nearby = null;
+            var ray = new Ray(player.CameraTransform.position, player.CameraTransform.forward);
+            if (UnityEngine.Physics.Raycast(ray, out var hitInfo, 2))
+                nearby = Player.Get(hitInfo.collider.transform.root.gameObject);
+            if (nearby == null)
+                return new string[] { "Musisz patrzyć się na gracza z bliska, żeby móc go uleczyć" };
+            else if ((nearby.MaxHealth - nearby.Health) < 1)
                 return new string[] { "Gracz nie wymaga leczenia" };
 
             Cooldowns.Add(player, DateTime.Now.AddSeconds(15));
-            player.SetSessionVariable(SessionVarType.BLOCK_INVENTORY_INTERACTION, true);
             Timing.RunCoroutine(this.ExecuteHealing(player, nearby, curItem));
 
             success = true;
@@ -59,6 +61,9 @@ namespace Mistaken.CommandsExtender.Commands
 
         private IEnumerator<float> ExecuteHealing(Player healer, Player healed, Item item)
         {
+            healer.TryGetEffect(Exiled.API.Enums.EffectType.Ensnared, out var effect);
+            effect.Intensity = 1;
+            healer.SetSessionVariable(SessionVarType.BLOCK_INVENTORY_INTERACTION, true);
             healed.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, string.Format(PluginHandler.Instance.Translation.GettingHealingMessage, 3), 5);
             yield return Timing.WaitForSeconds(1);
             Vector3 pos = healed.Position;
@@ -70,7 +75,9 @@ namespace Mistaken.CommandsExtender.Commands
                 {
                     healed.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, PluginHandler.Instance.Translation.HealingCancelledMessage, 5);
                     healer.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, PluginHandler.Instance.Translation.HealingCancelledHealerMessage, 5);
+                    effect.Intensity = 0;
                     healer.SetSessionVariable(SessionVarType.BLOCK_INVENTORY_INTERACTION, false);
+                    healer.DisableEffect<CustomPlayerEffects.Ensnared>();
                     yield break;
                 }
 
@@ -78,8 +85,10 @@ namespace Mistaken.CommandsExtender.Commands
                 yield return Timing.WaitForSeconds(1f);
             }
 
-            healed.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, null);
+            healed.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, string.Format(PluginHandler.Instance.Translation.HealingSuccessHealedMessage, healer.DisplayNickname), 5);
+            healer.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, string.Format(PluginHandler.Instance.Translation.HealingSuccessHealerMessage, healed.DisplayNickname), 5);
             healer.RemoveItem(item, false);
+            effect.Intensity = 0;
             healer.SetSessionVariable(SessionVarType.BLOCK_INVENTORY_INTERACTION, false);
 
             try
