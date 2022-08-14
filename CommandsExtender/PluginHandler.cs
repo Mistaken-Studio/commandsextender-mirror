@@ -11,7 +11,7 @@ using Exiled.API.Features;
 namespace Mistaken.CommandsExtender
 {
     /// <inheritdoc/>
-    public class PluginHandler : Plugin<Config>
+    internal class PluginHandler : Plugin<Config, Translations>
     {
         /// <inheritdoc/>
         public override string Author => "Mistaken Devs";
