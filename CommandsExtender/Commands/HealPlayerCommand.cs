@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    [CommandHandler(typeof(ClientCommandHandler))]
     internal class HealPlayerCommand : IBetterCommand
     {
         public override string Description => "Enables all tesla gates";
@@ -32,11 +32,13 @@ namespace Mistaken.CommandsExtender.Commands
         public override string[] Execute(ICommandSender sender, string[] args, out bool success)
         {
             success = false;
-            var player = sender.GetPlayer();
+            var player = Player.Get(sender);
             var curItem = player.CurrentItem;
+
             if (curItem == null || (curItem.Type != ItemType.Medkit && curItem.Type != ItemType.SCP500))
                 return new string[] { "Musisz mieć Apteczkę lub SCP-500 w ręce" };
-            else if (Cooldowns.TryGetValue(player, out var datetime) && datetime > DateTime.Now)
+
+            if (Cooldowns.TryGetValue(player, out var datetime) && datetime > DateTime.Now)
                 return new string[] { $"Musisz odczekać jeszcze {Math.Ceiling((datetime - DateTime.Now).TotalSeconds)}s" };
             else
                 Cooldowns.Remove(player);
@@ -45,6 +47,7 @@ namespace Mistaken.CommandsExtender.Commands
             var ray = new Ray(player.CameraTransform.position, player.CameraTransform.forward);
             if (UnityEngine.Physics.Raycast(ray, out var hitInfo, 2))
                 nearby = Player.Get(hitInfo.collider.transform.root.gameObject);
+
             if (nearby == null)
                 return new string[] { "Musisz patrzyć się na gracza z bliska, żeby móc go uleczyć" };
             else if ((nearby.MaxHealth - nearby.Health) < 1)

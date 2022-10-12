@@ -14,7 +14,7 @@ using Mistaken.API.Commands;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    [CommandHandler(typeof(ClientCommandHandler))]
     internal class CheckpointOpenCommand : IBetterCommand
     {
         public override string Description => base.Description;

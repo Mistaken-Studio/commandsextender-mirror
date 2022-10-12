@@ -4,18 +4,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.ComponentModel;
-using Mistaken.Updater.Config;
+using Exiled.API.Interfaces;
 
 namespace Mistaken.CommandsExtender
 {
-    internal class Config : IAutoUpdatableConfig
+    internal class Config : IConfig
     {
-        /// <inheritdoc/>
         public bool IsEnabled { get; set; } = true;
-
-        /// <inheritdoc/>
-        [Description("Auto Update Settings")]
-        public System.Collections.Generic.Dictionary<string, string> AutoUpdateConfig { get; set; }
     }
 }
