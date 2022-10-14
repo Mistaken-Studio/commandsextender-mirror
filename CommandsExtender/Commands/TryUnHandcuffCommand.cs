@@ -7,14 +7,13 @@
 using System.Collections.Generic;
 using CommandSystem;
 using Exiled.API.Features;
-using Mistaken.API;
 using Mistaken.API.Commands;
 using Mistaken.API.Extensions;
 using Mistaken.API.GUI;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    // [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    // [CommandHandler(typeof(ClientCommandHandler))]
     internal class TryUnHandcuffCommand : IBetterCommand
     {
         public override string Description => "Try your luck";
@@ -26,12 +25,16 @@ namespace Mistaken.CommandsExtender.Commands
         public override string[] Execute(ICommandSender sender, string[] args, out bool success)
         {
             success = false;
-            var player = sender.GetPlayer();
+            var player = Player.Get(sender);
+
             if (!player.IsCuffed)
                 return new string[] { "Nie jesteś skuty" };
+
             if (Tried.Contains(player.UserId))
                 return new string[] { "Możesz próbować tylko raz na życie" };
+
             Tried.Add(player.UserId);
+
             if (UnityEngine.Random.Range(1, 101) < 6 && player.Position.y < 800)
             {
                 player.Cuffer = null;
@@ -39,6 +42,7 @@ namespace Mistaken.CommandsExtender.Commands
                 player.EnableEffect<CustomPlayerEffects.Disabled>(10);
                 player.EnableEffect<CustomPlayerEffects.Concussed>(10);
                 player.EnableEffect<CustomPlayerEffects.Bleeding>();
+
                 success = true;
                 return new string[] { "Sukces" };
             }
@@ -49,11 +53,12 @@ namespace Mistaken.CommandsExtender.Commands
                 player.EnableEffect<CustomPlayerEffects.Concussed>(30);
                 player.EnableEffect<CustomPlayerEffects.Bleeding>();
                 player.Cuffer.SetGUI("try", PseudoGUIPosition.BOTTOM, $"<b>!! {player.Nickname} <color=yellow>próbował</color> się rozkuć !!</b>", 10);
+
                 success = true;
                 return new string[] { "Nie udało ci się" };
             }
         }
 
-        internal static readonly HashSet<string> Tried = new HashSet<string>();
+        internal static readonly HashSet<string> Tried = new();
     }
 }

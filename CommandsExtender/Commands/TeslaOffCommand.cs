@@ -7,11 +7,10 @@
 using CommandSystem;
 using Exiled.API.Features;
 using Mistaken.API.Commands;
-using Mistaken.API.Extensions;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    // [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    // [CommandHandler(typeof(ClientCommandHandler))]
     internal class TeslaOffCommand : IBetterCommand
     {
         public override string Description => "Disabled all tesla gates";
@@ -21,16 +20,21 @@ namespace Mistaken.CommandsExtender.Commands
         public override string[] Execute(ICommandSender sender, string[] args, out bool success)
         {
             success = false;
-            var player = sender.GetPlayer();
+            var player = Player.Get(sender);
+
             if (player.Role.Type != RoleType.NtfCaptain)
                 return new string[] { "Nie jesteś kapitanem" };
+
             if (API.Utilities.Map.TeslaMode == API.Utilities.TeslaMode.DISABLED)
                 return new string[] { "Tesle są już wyłączone" };
+
             if (TeslaOnCommand.AlreadyUsed.Contains(player.UserId))
                 return new string[] { "Możesz użyć .taslaOff lub .teslaOn tylko raz na runde" };
+
             API.Utilities.Map.TeslaMode = API.Utilities.TeslaMode.DISABLED;
             TeslaOnCommand.AlreadyUsed.Add(player.UserId);
             Cassie.Message("Tesla gates deactivated by order of NINETAILEDFOX COMMANDER");
+
             success = true;
             return new string[] { "Zrobione" };
         }

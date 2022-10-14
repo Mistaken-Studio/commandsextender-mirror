@@ -5,14 +5,13 @@
 // -----------------------------------------------------------------------
 
 using CommandSystem;
-using Mirror;
+using Exiled.API.Features;
 using Mistaken.API.Commands;
-using Mistaken.API.Extensions;
 using RoundRestarting;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    [CommandHandler(typeof(ClientCommandHandler))]
     internal class HubCommand : IBetterCommand
     {
         public override string Command => "hub";
@@ -40,8 +39,9 @@ namespace Mistaken.CommandsExtender.Commands
                 };
             }
 
-            var player = sender.GetPlayer();
-            player.Connection.Send<RoundRestartMessage>(new RoundRestartMessage(RoundRestartType.RedirectRestart, 1f, (ushort)(7776 + serverId), true, false));
+            var player = Player.Get(sender);
+            player.Connection.Send(new RoundRestartMessage(RoundRestartType.RedirectRestart, 1f, (ushort)(7776 + serverId), true, false));
+
             success = true;
             return new string[] { "Redirecting" };
         }

@@ -12,7 +12,7 @@ using Mistaken.API.Extensions;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    // [CommandSystem.CommandHandler(typeof(CommandSystem.ClientCommandHandler))]
+    // [CommandHandler(typeof(ClientCommandHandler))]
     internal class TeslaOnCommand : IBetterCommand
     {
         public override string Description => "Enables all tesla gates";
@@ -22,20 +22,25 @@ namespace Mistaken.CommandsExtender.Commands
         public override string[] Execute(ICommandSender sender, string[] args, out bool success)
         {
             success = false;
-            var player = sender.GetPlayer();
+            var player = Player.Get(sender);
+
             if (player.Role.Type != RoleType.NtfCaptain)
                 return new string[] { "Nie jesteś kapitanem" };
+
             if (API.Utilities.Map.TeslaMode == API.Utilities.TeslaMode.ENABLED)
                 return new string[] { "Tesle są już włączone" };
+
             if (AlreadyUsed.Contains(player.UserId))
                 return new string[] { "Możesz użyć .taslaOff lub .teslaOn tylko raz na runde" };
+
             API.Utilities.Map.TeslaMode = API.Utilities.TeslaMode.ENABLED;
             AlreadyUsed.Add(player.UserId);
             Cassie.Message("Tesla gates activated by order of NINETAILEDFOX COMMANDER");
+
             success = true;
             return new string[] { "Zrobione" };
         }
 
-        internal static readonly HashSet<string> AlreadyUsed = new HashSet<string>();
+        internal static readonly HashSet<string> AlreadyUsed = new();
     }
 }

@@ -7,28 +7,28 @@
 using System;
 using Exiled.API.Enums;
 using Exiled.API.Features;
+using Mistaken.Updater.API.Config;
 
 namespace Mistaken.CommandsExtender
 {
-    /// <inheritdoc/>
-    internal class PluginHandler : Plugin<Config, Translations>
+    internal sealed class PluginHandler : Plugin<Config, Translations>, IAutoUpdateablePlugin
     {
-        /// <inheritdoc/>
         public override string Author => "Mistaken Devs";
 
-        /// <inheritdoc/>
         public override string Name => "CommandsExtender";
 
-        /// <inheritdoc/>
         public override string Prefix => "MCE";
 
-        /// <inheritdoc/>
         public override PluginPriority Priority => PluginPriority.Default;
 
-        /// <inheritdoc/>
-        public override Version RequiredExiledVersion => new Version(4, 1, 2);
+        public override Version RequiredExiledVersion => new(5, 2, 2);
 
-        /// <inheritdoc/>
+        public AutoUpdateConfig AutoUpdateConfig => new()
+        {
+            Type = SourceType.GITLAB,
+            Url = "https://git.mistaken.pl/api/v4/projects/31",
+        };
+
         public override void OnEnabled()
         {
             Instance = this;
@@ -40,7 +40,6 @@ namespace Mistaken.CommandsExtender
             base.OnEnabled();
         }
 
-        /// <inheritdoc/>
         public override void OnDisabled()
         {
             API.Diagnostics.Module.OnDisable(this);

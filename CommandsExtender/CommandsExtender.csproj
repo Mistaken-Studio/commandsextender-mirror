@@ -10,6 +10,7 @@
     <RootNamespace>Mistaken.CommandsExtender</RootNamespace>
     <AssemblyName>Mistaken.CommandsExtender</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <LangVersion>9.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -34,8 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Exiled.API" HintPath="$(MISTAKEN_REFERENCES)\Exiled.API.dll" />
-    <Reference Include="Exiled.Events" HintPath="$(MISTAKEN_REFERENCES)\Exiled.Events.dll" />
+	<Reference Include="Exiled.API" HintPath="$(MISTAKEN_REFERENCES)\Exiled.API.dll" />
+	<Reference Include="Exiled.CustomItems" HintPath="$(MISTAKEN_REFERENCES)\Exiled.CustomItems.dll" />
+	<Reference Include="Exiled.Events" HintPath="$(MISTAKEN_REFERENCES)\Exiled.Events.dll" />
     <Reference Include="Exiled.Permissions" HintPath="$(MISTAKEN_REFERENCES)\Exiled.Permissions.dll" />
     <Reference Include="Mistaken.Updater" HintPath="$(MISTAKEN_REFERENCES)\Mistaken.Updater.dll" />
     <Reference Include="0Mistaken.API" HintPath="$(MISTAKEN_REFERENCES)\0Mistaken.API.dll" />
@@ -58,6 +60,7 @@
     <Compile Include="CommandsHandler.cs" />
     <Compile Include="Commands\CheckpointOpenCommand.cs" />
     <Compile Include="Commands\HubCommand.cs" />
+    <Compile Include="Commands\SuicideCommandHandler.cs" />
     <Compile Include="Commands\TeslaOffCommand.cs" />
     <Compile Include="Commands\HealPlayerCommand.cs" />
     <Compile Include="Commands\TeslaOnCommand.cs" />
