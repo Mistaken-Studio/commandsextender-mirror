@@ -11,7 +11,7 @@ using Mistaken.API.Commands;
 namespace Mistaken.CommandsExtender.Commands
 {
     // [CommandHandler(typeof(ClientCommandHandler))]
-    internal class TeslaOffCommand : IBetterCommand
+    internal sealed class TeslaOffCommand : IBetterCommand
     {
         public override string Description => "Disabled all tesla gates";
 
@@ -28,11 +28,11 @@ namespace Mistaken.CommandsExtender.Commands
             if (API.Utilities.Map.TeslaMode == API.Utilities.TeslaMode.DISABLED)
                 return new string[] { "Tesle są już wyłączone" };
 
-            if (TeslaOnCommand.AlreadyUsed.Contains(player.UserId))
+            if (TeslaOnCommand._alreadyUsed.Contains(player.UserId))
                 return new string[] { "Możesz użyć .taslaOff lub .teslaOn tylko raz na runde" };
 
             API.Utilities.Map.TeslaMode = API.Utilities.TeslaMode.DISABLED;
-            TeslaOnCommand.AlreadyUsed.Add(player.UserId);
+            TeslaOnCommand._alreadyUsed.Add(player.UserId);
             Cassie.Message("Tesla gates deactivated by order of NINETAILEDFOX COMMANDER");
 
             success = true;

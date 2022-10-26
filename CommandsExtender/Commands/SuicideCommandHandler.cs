@@ -11,7 +11,7 @@ using Mistaken.API.Commands;
 namespace Mistaken.CommandsExtender.Commands
 {
     [CommandHandler(typeof(ClientCommandHandler))]
-    internal class SuicideCommandHandler : IBetterCommand
+    internal sealed class SuicideCommandHandler : IBetterCommand
     {
         public override string Command => "suicide";
 

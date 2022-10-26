@@ -15,7 +15,7 @@ using Mistaken.API.Commands;
 namespace Mistaken.CommandsExtender.Commands
 {
     [CommandHandler(typeof(ClientCommandHandler))]
-    internal class CheckpointOpenCommand : IBetterCommand
+    internal sealed class CheckpointOpenCommand : IBetterCommand
     {
         public override string Description => base.Description;
 
@@ -32,11 +32,13 @@ namespace Mistaken.CommandsExtender.Commands
                 return new string[] { "Musisz być kapitanem by użyć tej komendy" };
 
             var door = Door.List.First(x => x.Type == DoorType.CheckpointEntrance).Base as CheckpointDoor;
+
             if (door._subDoors.Any(x => x.TargetState))
                 return new string[] { "Drzwi od checkpoint'a są już otwarte" };
 
             door.ToggleAllDoors(true);
             door.ServerChangeLock(DoorLockReason.Warhead, true);
+            door.NetworkTargetState = true;
 
             success = true;
             return new string[] { "Zrobione" };

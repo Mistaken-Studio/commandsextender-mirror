@@ -57,7 +57,7 @@ namespace Mistaken.CommandsExtender
 
         private void Player_ChangingRole(Exiled.Events.EventArgs.ChangingRoleEventArgs ev)
         {
-            TryUnHandcuffCommand.Tried.Remove(ev.Player.UserId);
+            TryUnHandcuffCommand._tried.Remove(ev.Player.UserId);
             InSuicidialState.Remove(ev.Player.Id);
         }
 
@@ -67,7 +67,7 @@ namespace Mistaken.CommandsExtender
                 return;
 
             if (ev.Target.Role.Type == RoleType.NtfCaptain)
-                TeslaOnCommand.AlreadyUsed.Remove(ev.Target.UserId);
+                TeslaOnCommand._alreadyUsed.Remove(ev.Target.UserId);
         }
 
         private void Player_Shooting(Exiled.Events.EventArgs.ShootingEventArgs ev)
@@ -75,6 +75,7 @@ namespace Mistaken.CommandsExtender
             if (InSuicidialState.Contains(ev.Shooter.Id))
             {
                 ev.IsAllowed = false;
+
                 if (CustomItem.TryGet(ev.Shooter.CurrentItem, out _))
                 {
                     ev.Shooter.SetGUI("Suicide_Fail", API.GUI.PseudoGUIPosition.MIDDLE, PluginHandler.Instance.Translation.CustomItemsSuicideInfo, 5);
@@ -89,7 +90,7 @@ namespace Mistaken.CommandsExtender
 
         private void Server_RestartingRound()
         {
-            TeslaOnCommand.AlreadyUsed.Clear();
+            TeslaOnCommand._alreadyUsed.Clear();
             InSuicidialState.Clear();
         }
     }

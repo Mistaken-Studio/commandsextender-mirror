@@ -21,7 +21,7 @@ using UnityEngine;
 namespace Mistaken.CommandsExtender.Commands
 {
     [CommandHandler(typeof(ClientCommandHandler))]
-    internal class HealPlayerCommand : IBetterCommand
+    internal sealed class HealPlayerCommand : IBetterCommand
     {
         public override string Description => "Enables all tesla gates";
 
@@ -45,6 +45,7 @@ namespace Mistaken.CommandsExtender.Commands
 
             Player nearby = null;
             var ray = new Ray(player.CameraTransform.position, player.CameraTransform.forward);
+
             if (UnityEngine.Physics.Raycast(ray, out var hitInfo, 2))
                 nearby = Player.Get(hitInfo.collider.transform.root.gameObject);
 
@@ -70,10 +71,12 @@ namespace Mistaken.CommandsExtender.Commands
             healed.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, string.Format(PluginHandler.Instance.Translation.GettingHealingMessage, 3), 5);
             yield return Timing.WaitForSeconds(1);
             Vector3 pos = healed.Position;
+
             for (int i = 2; i >= 0; i--)
             {
                 if (!healed.IsConnected)
                     break;
+
                 if (pos != healed.Position)
                 {
                     healed.SetGUI("healplayer", PseudoGUIPosition.MIDDLE, PluginHandler.Instance.Translation.HealingCancelledMessage, 5);
@@ -100,6 +103,7 @@ namespace Mistaken.CommandsExtender.Commands
                 {
                     healed.AddItem(item);
                     ((Consumable)item.Base).ServerOnUsingCompleted();
+
                     if (healed.Items.Contains(item))
                     {
                         healed.RemoveItem(item, false);
@@ -112,6 +116,7 @@ namespace Mistaken.CommandsExtender.Commands
                     healed.DropItem(toDrop);
                     healed.AddItem(item);
                     ((Consumable)item.Base).ServerOnUsingCompleted();
+
                     if (healed.Items.Contains(item))
                     {
                         healed.RemoveItem(item, false);

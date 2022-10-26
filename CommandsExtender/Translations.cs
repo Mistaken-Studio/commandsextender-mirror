@@ -8,7 +8,7 @@ using Exiled.API.Interfaces;
 
 namespace Mistaken.CommandsExtender
 {
-    internal class Translations : ITranslation
+    internal sealed class Translations : ITranslation
     {
         public string GettingHealingMessage { get; set; } = "<color=red><size=150%>You are being healed</size></color><br>Stand still for <color=yellow>{0}</color>s";
 
