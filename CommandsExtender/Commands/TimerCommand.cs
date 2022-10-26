@@ -16,7 +16,7 @@ namespace Mistaken.CommandsExtender.Commands
 {
     [CommandHandler(typeof(ClientCommandHandler))]
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
-    internal class TimerCommand : IBetterCommand
+    internal sealed class TimerCommand : IBetterCommand
     {
         public override string Command => "timer";
 

@@ -14,7 +14,7 @@ using Mistaken.API.GUI;
 namespace Mistaken.CommandsExtender.Commands
 {
     // [CommandHandler(typeof(ClientCommandHandler))]
-    internal class TryUnHandcuffCommand : IBetterCommand
+    internal sealed class TryUnHandcuffCommand : IBetterCommand
     {
         public override string Description => "Try your luck";
 
@@ -30,10 +30,10 @@ namespace Mistaken.CommandsExtender.Commands
             if (!player.IsCuffed)
                 return new string[] { "Nie jesteś skuty" };
 
-            if (Tried.Contains(player.UserId))
+            if (_tried.Contains(player.UserId))
                 return new string[] { "Możesz próbować tylko raz na życie" };
 
-            Tried.Add(player.UserId);
+            _tried.Add(player.UserId);
 
             if (UnityEngine.Random.Range(1, 101) < 6 && player.Position.y < 800)
             {
@@ -59,6 +59,6 @@ namespace Mistaken.CommandsExtender.Commands
             }
         }
 
-        internal static readonly HashSet<string> Tried = new();
+        internal static readonly HashSet<string> _tried = new();
     }
 }
