@@ -23,8 +23,6 @@ namespace Mistaken.CommandsExtender.Commands
 
         public override string Command => "try";
 
-        public override string[] Aliases => new string[] { };
-
         public override string[] Execute(ICommandSender sender, string[] args, out bool success)
         {
             success = false;
@@ -53,7 +51,7 @@ namespace Mistaken.CommandsExtender.Commands
                 player.Cuffer = null;
                 new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated();
                 player.EnableEffect<CustomPlayerEffects.Concussed>(10);
-                player.EnableEffect<CustomPlayerEffects.Invigorated>(15);
+                player.EnableEffect<CustomPlayerEffects.Invigorated>(10);
 
                 success = true;
                 return new string[] { "Sukces" };
