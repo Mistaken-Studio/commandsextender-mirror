@@ -13,7 +13,7 @@ namespace Mistaken.CommandsExtender
     {
         public bool IsEnabled { get; set; } = true;
 
-        [Description("Try command settings\nA chance for the player to become uncuffed after using this command (0 - 100)")]
+        [Description("A chance for the player to become uncuffed after using this command (0 - 100)")]
         public int TrySuccessChance { get; set; } = 20;
 
         [Description("Cooldown after which this command can be used again (in seconds)")]
