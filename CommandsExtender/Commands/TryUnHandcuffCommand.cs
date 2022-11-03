@@ -8,9 +8,11 @@ using System;
 using System.Collections.Generic;
 using CommandSystem;
 using Exiled.API.Features;
+using InventorySystem.Disarming;
 using Mistaken.API.Commands;
 using Mistaken.API.Extensions;
 using Mistaken.API.GUI;
+using Utils.Networking;
 
 namespace Mistaken.CommandsExtender.Commands
 {
@@ -49,6 +51,7 @@ namespace Mistaken.CommandsExtender.Commands
             if (UnityEngine.Random.Range(1, 101) <= PluginHandler.Instance.Config.TrySuccessChance)
             {
                 player.Cuffer = null;
+                new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated();
                 player.EnableEffect<CustomPlayerEffects.Concussed>(10);
                 player.EnableEffect<CustomPlayerEffects.Invigorated>(15);
 
