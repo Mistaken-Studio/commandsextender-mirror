@@ -57,7 +57,7 @@ namespace Mistaken.CommandsExtender
 
         private void Player_ChangingRole(Exiled.Events.EventArgs.ChangingRoleEventArgs ev)
         {
-            TryUnHandcuffCommand._tried.Remove(ev.Player.UserId);
+            TryUnHandcuffCommand._cooldowns.Remove(ev.Player.UserId);
             InSuicidialState.Remove(ev.Player.Id);
         }
 
@@ -91,6 +91,7 @@ namespace Mistaken.CommandsExtender
         private void Server_RestartingRound()
         {
             TeslaOnCommand._alreadyUsed.Clear();
+            TryUnHandcuffCommand._cooldowns.Clear();
             InSuicidialState.Clear();
         }
     }

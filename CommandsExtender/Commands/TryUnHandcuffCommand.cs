@@ -4,6 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using CommandSystem;
 using Exiled.API.Features;
@@ -13,7 +14,7 @@ using Mistaken.API.GUI;
 
 namespace Mistaken.CommandsExtender.Commands
 {
-    // [CommandHandler(typeof(ClientCommandHandler))]
+    [CommandHandler(typeof(ClientCommandHandler))]
     internal sealed class TryUnHandcuffCommand : IBetterCommand
     {
         public override string Description => "Try your luck";
@@ -30,35 +31,41 @@ namespace Mistaken.CommandsExtender.Commands
             if (!player.IsCuffed)
                 return new string[] { "Nie jesteś skuty" };
 
-            if (_tried.Contains(player.UserId))
-                return new string[] { "Możesz próbować tylko raz na życie" };
+            if (player.Position.y > 900)
+                return new string[] { "Nie możesz próbować rozkuć się będąc na powierzchni" };
 
-            _tried.Add(player.UserId);
+            if (_cooldowns.TryGetValue(player.UserId, out var time))
+            {
+                var diff = (time - DateTime.Now).TotalSeconds;
 
-            if (UnityEngine.Random.Range(1, 101) < 6 && player.Position.y < 800)
+                if (diff <= 0)
+                    _cooldowns.Remove(player.UserId);
+                else
+                    return new string[] { $"Musisz odczekać jeszcze {Math.Round(diff)}s zanim będziesz mógł użyć tej komendy ponownie" };
+            }
+
+            _cooldowns.Add(player.UserId, DateTime.Now.AddSeconds(PluginHandler.Instance.Config.TryCooldown));
+
+            if (UnityEngine.Random.Range(1, 101) <= PluginHandler.Instance.Config.TrySuccessChance)
             {
                 player.Cuffer = null;
-                player.EnableEffect<CustomPlayerEffects.Amnesia>(10);
-                player.EnableEffect<CustomPlayerEffects.Disabled>(10);
                 player.EnableEffect<CustomPlayerEffects.Concussed>(10);
-                player.EnableEffect<CustomPlayerEffects.Bleeding>();
+                player.EnableEffect<CustomPlayerEffects.Invigorated>(15);
 
                 success = true;
                 return new string[] { "Sukces" };
             }
             else
             {
-                player.EnableEffect<CustomPlayerEffects.Amnesia>(10);
-                player.EnableEffect<CustomPlayerEffects.Disabled>(15);
-                player.EnableEffect<CustomPlayerEffects.Concussed>(30);
-                player.EnableEffect<CustomPlayerEffects.Bleeding>();
-                player.Cuffer.SetGUI("try", PseudoGUIPosition.BOTTOM, $"<b>!! {player.Nickname} <color=yellow>próbował</color> się rozkuć !!</b>", 10);
+                player.EnableEffect<CustomPlayerEffects.Concussed>(10);
+                player.EnableEffect<CustomPlayerEffects.Disabled>(5);
+                player.Cuffer.SetGUI("try", PseudoGUIPosition.BOTTOM, $"<b>!! {player.GetDisplayName()} <color=yellow>próbował</color> się rozkuć !!</b>", 10);
 
                 success = true;
                 return new string[] { "Nie udało ci się" };
             }
         }
 
-        internal static readonly HashSet<string> _tried = new();
+        internal static readonly Dictionary<string, DateTime> _cooldowns = new();
     }
 }
