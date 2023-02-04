@@ -1,46 +1,39 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="TeslaOnCommand.cs" company="Mistaken">
-// Copyright (c) Mistaken. All rights reserved.
-// </copyright>
-// -----------------------------------------------------------------------
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CommandSystem;
-using Exiled.API.Features;
 using Mistaken.API.Commands;
-using Mistaken.API.Extensions;
+using PlayerRoles;
+using PluginAPI.Core;
 
-namespace Mistaken.CommandsExtender.Commands
+namespace Mistaken.CommandsExtender.Commands;
+
+// [CommandHandler(typeof(ClientCommandHandler))]
+internal sealed class TeslaOnCommand : IBetterCommand
 {
-    // [CommandHandler(typeof(ClientCommandHandler))]
-    internal sealed class TeslaOnCommand : IBetterCommand
+    public override string Description => "Enables all tesla gates";
+
+    public override string Command => "teslaOn";
+
+    public override string[] Execute(ICommandSender sender, string[] args, out bool success)
     {
-        public override string Description => "Enables all tesla gates";
+        success = false;
+        var player = Player.Get(sender);
 
-        public override string Command => "teslaOn";
+        if (player.Role != RoleTypeId.NtfCaptain)
+            return new string[] { "Nie jesteś kapitanem" };
 
-        public override string[] Execute(ICommandSender sender, string[] args, out bool success)
-        {
-            success = false;
-            var player = Player.Get(sender);
+        if (API.Utilities.Map.TeslaMode == API.Utilities.TeslaMode.ENABLED)
+            return new string[] { "Tesle są już włączone" };
 
-            if (player.Role.Type != RoleType.NtfCaptain)
-                return new string[] { "Nie jesteś kapitanem" };
+        if (_alreadyUsed.Contains(player.UserId))
+            return new string[] { "Możesz użyć .taslaOff lub .teslaOn tylko raz na runde" };
 
-            if (API.Utilities.Map.TeslaMode == API.Utilities.TeslaMode.ENABLED)
-                return new string[] { "Tesle są już włączone" };
+        API.Utilities.Map.TeslaMode = API.Utilities.TeslaMode.ENABLED;
+        _alreadyUsed.Add(player.UserId);
+        Cassie.Message("Tesla gates activated by order of NINETAILEDFOX COMMANDER");
 
-            if (_alreadyUsed.Contains(player.UserId))
-                return new string[] { "Możesz użyć .taslaOff lub .teslaOn tylko raz na runde" };
-
-            API.Utilities.Map.TeslaMode = API.Utilities.TeslaMode.ENABLED;
-            _alreadyUsed.Add(player.UserId);
-            Cassie.Message("Tesla gates activated by order of NINETAILEDFOX COMMANDER");
-
-            success = true;
-            return new string[] { "Zrobione" };
-        }
-
-        internal static readonly HashSet<string> _alreadyUsed = new();
+        success = true;
+        return new string[] { "Zrobione" };
     }
+
+    internal static readonly HashSet<string> _alreadyUsed = new();
 }

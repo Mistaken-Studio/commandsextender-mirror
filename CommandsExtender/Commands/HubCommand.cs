@@ -1,50 +1,41 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="HubCommand.cs" company="Mistaken">
-// Copyright (c) Mistaken. All rights reserved.
-// </copyright>
-// -----------------------------------------------------------------------
-
-using CommandSystem;
-using Exiled.API.Features;
-using Mistaken.API.Commands;
+﻿using CommandSystem;
+using PluginAPI.Core;
 using RoundRestarting;
+using System;
 
-namespace Mistaken.CommandsExtender.Commands
+namespace Mistaken.CommandsExtender.Commands;
+
+[CommandHandler(typeof(ClientCommandHandler))]
+internal sealed class HubCommand : ICommand
 {
-    [CommandHandler(typeof(ClientCommandHandler))]
-    internal sealed class HubCommand : IBetterCommand
+    public string Command => "hub";
+
+    public string[] Aliases => Array.Empty<string>();
+
+    public string Description => "Pozwala przełączyć między serwerami Mistaken";
+
+    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        public override string Command => "hub";
+        response = "Redirecting";
+        var player = Player.Get(sender);
 
-        public string GetUsage()
+        if (arguments.Count == 0 || !byte.TryParse(arguments.At(0), out byte serverId) || !(serverId == 1 || serverId == 2 || serverId == 3 || serverId == 4 || serverId == 14 || serverId == 15))
         {
-            return ".hub [server]";
-        }
-
-        public override string[] Execute(ICommandSender sender, string[] args, out bool success)
-        {
-            success = false;
-
-            if (args.Length == 0 || !byte.TryParse(args[0], out byte serverId) || !(serverId == 1 || serverId == 2 || serverId == 3 || serverId == 4 || serverId == 14 || serverId == 15))
+            response = string.Join("\n", new[]
             {
-                return new string[]
-                {
-                    "Bad arguments",
-                    this.GetUsage(),
-                    "Server:",
+                "Bad arguments",
+                ".hub [server]",
+                "Server:",
+                "1 - RP",
+                "2 - RP 2",
+                "3 - Casual",
+                "4 - Memes",
+            });
 
-                    "1 - RP",
-                    "2 - RP 2",
-                    "3 - Casual",
-                    "4 - Memes",
-                };
-            }
-
-            var player = Player.Get(sender);
-            player.Connection.Send(new RoundRestartMessage(RoundRestartType.RedirectRestart, 1f, (ushort)(7776 + serverId), true, false));
-
-            success = true;
-            return new string[] { "Redirecting" };
+            return false;
         }
+
+        player.Connection.Send(new RoundRestartMessage(RoundRestartType.RedirectRestart, 1f, (ushort)(7776 + serverId), true, false));
+        return true;
     }
 }

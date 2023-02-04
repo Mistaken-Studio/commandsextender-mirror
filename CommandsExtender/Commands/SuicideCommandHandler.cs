@@ -1,45 +1,39 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="SuicideCommandHandler.cs" company="Mistaken">
-// Copyright (c) Mistaken. All rights reserved.
-// </copyright>
-// -----------------------------------------------------------------------
+﻿using CommandSystem;
+using PluginAPI.Core;
+using System;
 
-using CommandSystem;
-using Exiled.API.Features;
-using Mistaken.API.Commands;
+namespace Mistaken.CommandsExtender.Commands;
 
-namespace Mistaken.CommandsExtender.Commands
+[CommandHandler(typeof(ClientCommandHandler))]
+internal sealed class SuicideCommandHandler : ICommand
 {
-    [CommandHandler(typeof(ClientCommandHandler))]
-    internal sealed class SuicideCommandHandler : IBetterCommand
+    public string Command => "suicide";
+
+    public string[] Aliases => Array.Empty<string>();
+
+    public string Description => "Pozwala popełnić samobójstwo za pomocą broni";
+
+    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        public override string Command => "suicide";
+        response = "Tylko klasy ludzkie mogą popełnić samobójstwo";
+        var player = Player.Get(sender);
 
-        public override string[] Aliases => new string[] { };
-
-        public override string Description => "Commit suicide";
-
-        public override string[] Execute(ICommandSender sender, string[] args, out bool success)
+        if (player.IsHuman)
         {
-            success = false;
-            var player = Player.Get(sender);
-
-            if (player.IsHuman)
+            if (!CommandsHandler.InSuicidialState.Contains(player.UserId))
             {
-                success = true;
-                if (!CommandsHandler.InSuicidialState.Contains(player.Id))
-                {
-                    CommandsHandler.InSuicidialState.Add(player.Id);
-                    return new string[] { PluginHandler.Instance.Translation.SuicideEnter };
-                }
-                else
-                {
-                    CommandsHandler.InSuicidialState.Remove(player.Id);
-                    return new string[] { PluginHandler.Instance.Translation.SuicideExit };
-                }
+                CommandsHandler.InSuicidialState.Add(player.UserId);
+                response = Plugin.Translations.SuicideEnter;
+            }
+            else
+            {
+                CommandsHandler.InSuicidialState.Remove(player.UserId);
+                response = Plugin.Translations.SuicideExit;
             }
 
-            return new string[] { "Only human's can commit suicide!" };
+            return true;
         }
+
+        return false;
     }
 }

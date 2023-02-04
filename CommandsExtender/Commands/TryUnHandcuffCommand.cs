@@ -1,72 +1,74 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="TryUnHandcuffCommand.cs" company="Mistaken">
-// Copyright (c) Mistaken. All rights reserved.
-// </copyright>
-// -----------------------------------------------------------------------
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CommandSystem;
-using Exiled.API.Features;
 using InventorySystem.Disarming;
-using Mistaken.API.Commands;
 using Mistaken.API.Extensions;
-using Mistaken.API.GUI;
+using Mistaken.PseudoGUI;
+using PluginAPI.Core;
 using Utils.Networking;
 
-namespace Mistaken.CommandsExtender.Commands
+namespace Mistaken.CommandsExtender.Commands;
+
+[CommandHandler(typeof(ClientCommandHandler))]
+internal sealed class TryUnHandcuffCommand : ICommand
 {
-    [CommandHandler(typeof(ClientCommandHandler))]
-    internal sealed class TryUnHandcuffCommand : IBetterCommand
+    public static readonly Dictionary<string, DateTime> Cooldowns = new();
+
+    public string Command => "try";
+
+    public string[] Aliases => Array.Empty<string>();
+
+    public string Description => "Próba rozkucia się";
+
+    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        public override string Description => "Try your luck";
+        var player = Player.Get(sender);
 
-        public override string Command => "try";
-
-        public override string[] Execute(ICommandSender sender, string[] args, out bool success)
+        if (!player.ReferenceHub.inventory.IsDisarmed())
         {
-            success = false;
-            var player = Player.Get(sender);
+            response = "Nie jesteś skuty";
+            return false;
+        }
 
-            if (!player.IsCuffed)
-                return new string[] { "Nie jesteś skuty" };
+        if (player.Position.y > 900f)
+        {
+            response = "Nie możesz próbować rozkuć się będąc na powierzchni";
+            return false;
+        }
 
-            if (player.Position.y > 900)
-                return new string[] { "Nie możesz próbować rozkuć się będąc na powierzchni" };
+        if (Cooldowns.TryGetValue(player.UserId, out var time))
+        {
+            var diff = (time - DateTime.Now).TotalSeconds;
 
-            if (_cooldowns.TryGetValue(player.UserId, out var time))
-            {
-                var diff = (time - DateTime.Now).TotalSeconds;
-
-                if (diff <= 0)
-                    _cooldowns.Remove(player.UserId);
-                else
-                    return new string[] { $"Musisz odczekać jeszcze {Math.Round(diff)}s zanim będziesz mógł użyć tej komendy ponownie" };
-            }
-
-            _cooldowns.Add(player.UserId, DateTime.Now.AddSeconds(PluginHandler.Instance.Config.TryCooldown));
-
-            if (UnityEngine.Random.Range(1, 101) <= PluginHandler.Instance.Config.TrySuccessChance)
-            {
-                player.Cuffer = null;
-                new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated();
-                player.EnableEffect<CustomPlayerEffects.Concussed>(10);
-                player.EnableEffect<CustomPlayerEffects.Invigorated>(10);
-
-                success = true;
-                return new string[] { "Sukces" };
-            }
+            if (diff <= 0)
+                Cooldowns.Remove(player.UserId);
             else
             {
-                player.EnableEffect<CustomPlayerEffects.Concussed>(10);
-                player.EnableEffect<CustomPlayerEffects.Disabled>(5);
-                player.Cuffer.SetGUI("try", PseudoGUIPosition.BOTTOM, $"<b>!! {player.GetDisplayName()} <color=yellow>próbował</color> się rozkuć !!</b>", 10);
-
-                success = true;
-                return new string[] { "Nie udało ci się" };
+                response = $"Musisz odczekać jeszcze {Math.Round(diff)}s zanim będziesz mógł użyć tej komendy ponownie";
+                return false;
             }
         }
 
-        internal static readonly Dictionary<string, DateTime> _cooldowns = new();
+        Cooldowns.Add(player.UserId, DateTime.Now.AddSeconds(Plugin.Instance.Config.TryCooldown));
+
+        if (UnityEngine.Random.Range(1, 101) <= Plugin.Instance.Config.TrySuccessChance)
+        {
+            DisarmedPlayers.Entries.Remove(DisarmedPlayers.Entries.First(x => x.DisarmedPlayer == player.NetworkId));
+            new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated();
+            player.EffectsManager.EnableEffect<CustomPlayerEffects.Concussed>(10);
+            player.EffectsManager.EnableEffect<CustomPlayerEffects.Invigorated>(10);
+            response = "Sukces";
+        }
+        else
+        {
+            var cuffer = Player.Get(DisarmedPlayers.Entries.First(x => x.DisarmedPlayer == player.NetworkId).Disarmer);
+            player.EffectsManager.EnableEffect<CustomPlayerEffects.Concussed>(10);
+            player.EffectsManager.EnableEffect<CustomPlayerEffects.Disabled>(5);
+            cuffer.SetGUI("try", PseudoGUIPosition.BOTTOM, $"<b>!! {player.GetDisplayName()} <color=yellow>próbował</color> się rozkuć !!</b>", 10);
+            response = "Nie udało ci się";
+        }
+
+        return true;
     }
 }

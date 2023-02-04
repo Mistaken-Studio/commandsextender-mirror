@@ -1,47 +1,48 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="CheckpointOpenCommand.cs" company="Mistaken">
-// Copyright (c) Mistaken. All rights reserved.
-// </copyright>
-// -----------------------------------------------------------------------
-
+﻿using System;
 using System.Linq;
 using CommandSystem;
-using Exiled.API.Enums;
-using Exiled.API.Features;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
-using Mistaken.API.Commands;
+using PlayerRoles;
+using PluginAPI.Core;
 
-namespace Mistaken.CommandsExtender.Commands
+namespace Mistaken.CommandsExtender.Commands;
+
+[CommandHandler(typeof(ClientCommandHandler))]
+internal sealed class CheckpointOpenCommand : ICommand
 {
-    [CommandHandler(typeof(ClientCommandHandler))]
-    internal sealed class CheckpointOpenCommand : IBetterCommand
+    public string Command => "checkpointopen";
+
+    public string[] Aliases => new[] { "checkopen" };
+
+    public string Description => "Otwiera przejścia HCZ-EZ na stałe";
+
+    public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
-        public override string Description => base.Description;
+        response = "Zrobione";
+        var player = Player.Get(sender);
 
-        public override string[] Aliases => new string[] { "checkopen" };
-
-        public override string Command => "checkpointopen";
-
-        public override string[] Execute(ICommandSender sender, string[] args, out bool success)
+        if (player.Role != RoleTypeId.NtfCaptain)
         {
-            var player = Player.Get(sender);
-            success = false;
+            response = "Musisz być kapitanem by użyć tej komendy";
+            return false;
+        }
 
-            if (player.Role.Type != RoleType.NtfCaptain)
-                return new string[] { "Musisz być kapitanem by użyć tej komendy" };
+        var checkpoints = DoorVariant.AllDoors.Where(x => x is CheckpointDoor door && x.transform.position.y < -900f).Cast<CheckpointDoor>();
 
-            var door = Door.List.First(x => x.Type == DoorType.CheckpointEntrance).Base as CheckpointDoor;
-
-            if (door._subDoors.Any(x => x.TargetState))
-                return new string[] { "Drzwi od checkpoint'a są już otwarte" };
+        foreach (var door in checkpoints)
+        {
+            if (door._subDoors.Any(x => x.TargetState) && ((DoorLockReason)door.NetworkActiveLocks & DoorLockReason.Warhead) == DoorLockReason.Warhead)
+            {
+                response = "Drzwi od checkpoint'a są już otwarte";
+                return false;
+            }
 
             door.ToggleAllDoors(true);
             door.ServerChangeLock(DoorLockReason.Warhead, true);
             door.NetworkTargetState = true;
-
-            success = true;
-            return new string[] { "Zrobione" };
         }
+        
+        return true;
     }
 }

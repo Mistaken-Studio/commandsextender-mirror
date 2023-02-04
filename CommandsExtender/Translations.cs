@@ -1,41 +1,22 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="Translations.cs" company="Mistaken">
-// Copyright (c) Mistaken. All rights reserved.
-// </copyright>
-// -----------------------------------------------------------------------
+﻿namespace Mistaken.CommandsExtender;
 
-using Exiled.API.Interfaces;
-
-namespace Mistaken.CommandsExtender
+internal sealed class Translations
 {
-    internal sealed class Translations : ITranslation
-    {
-        public string GettingHealingMessage { get; set; } = "<color=red><size=150%>You are being healed</size></color><br>Stand still for <color=yellow>{0}</color>s";
+    public string GettingHealingMessage { get; set; } = "<color=red><size=150%>Jesteś leczony</size></color><br>Stój w miejscu przez <color=yellow>{0}</color>s";
 
-        public string HealingCancelledMessage { get; set; } = "<color=red><size=150%>Healing canceled</size></color>";
+    public string HealingCancelledMessage { get; set; } = "<color=red><size=150%>Leczenie anulowane</size></color>";
 
-        public string HealingCancelledHealerMessage { get; set; } = "<color=red><size=150%>Healing canceled</size></color><br>Player <color=yellow>moved</color>";
+    public string HealingCancelledHealerMessage { get; set; } = "<color=red><size=150%>Leczenie anulowane</size></color><br>Gracz <color=yellow>poruszył się</color>";
 
-        public string HealingSuccessHealerMessage { get; set; } = "You have <color=green>healed</color> <color=yellow>{0}</color>";
+    public string HealingSuccessHealerMessage { get; set; } = "Pomyślnie <color=green>uleczyłeś</color> <color=yellow>{0}</color>";
 
-        public string HealingSuccessHealedMessage { get; set; } = "You have been <color=green>healed</color> by <color=yellow>{0}</color>";
+    public string HealingSuccessHealedMessage { get; set; } = "Zostałeś <color=green>uleczony</color> przez <color=yellow>{0}</color>";
 
-        public string SuicideEnter { get; set; } = "Shoot to kill yourself";
+    public string SuicideEnter { get; set; } = "Strzel by się zabić";
 
-        public string SuicideExit { get; set; } = "You can now shoot without killing yourself";
+    public string SuicideExit { get; set; } = "Teraz możesz strzelić bez zabicia się";
 
-        public string DeadMsg556x45 { get; set; } = "There is a hole in the head. It looks like 5.56x45 caliber";
+    public string SuicideDeathMessage { get; set; } = "Wygląda jakby miał dziurę w głowie spowodowaną wystrzałem z broni z bliskiej odległości";
 
-        public string DeadMsg762x39 { get; set; } = "There is a hole in the head. It looks like 7.62x39 caliber";
-
-        public string DeadMsg9x19 { get; set; } = "There is a hole in the head. It looks like 9x19 caliber";
-
-        public string DeadMsg12gauge { get; set; } = "There is a hole in the head. It looks like 12 gauge";
-
-        public string DeadMsg44cal { get; set; } = "There is a hole in the head. It looks like .44 caliber";
-
-        public string DeadMsgUnknown { get; set; } = "There is a hole in the head but it's unknown what caused it";
-
-        public string CustomItemsSuicideInfo { get; set; } = "<size=120%>You can't commit suicide using a CustomItem</size>";
-    }
+    // public string CustomItemsSuicideInfo { get; set; } = "<size=120%>You can't commit suicide using a CustomItem</size>";
 }
