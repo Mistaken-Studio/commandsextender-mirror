@@ -57,13 +57,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandsHandler.cs" />
-    <Compile Include="Commands\CheckpointOpenCommand.cs" />
-    <Compile Include="Commands\HubCommand.cs" />
-    <Compile Include="Commands\SuicideCommandHandler.cs" />
-    <Compile Include="Commands\TeslaOffCommand.cs" />
-    <Compile Include="Commands\HealPlayerCommand.cs" />
-    <Compile Include="Commands\TeslaOnCommand.cs" />
-    <Compile Include="Commands\TryUnHandcuffCommand.cs" />
+    <Compile Include="Commands\CheckpointOpen.cs" />
+    <Compile Include="Commands\Hub.cs" />
+    <Compile Include="Commands\Suicide.cs" />
+    <Compile Include="Commands\TeslaOff.cs" />
+    <Compile Include="Commands\HealPlayer.cs" />
+    <Compile Include="Commands\TeslaOn.cs" />
+    <Compile Include="Commands\TryUncuff.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

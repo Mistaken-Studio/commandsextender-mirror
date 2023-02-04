@@ -6,7 +6,7 @@ using System;
 namespace Mistaken.CommandsExtender.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-internal sealed class HubCommand : ICommand
+internal sealed class Hub : ICommand
 {
     public string Command => "hub";
 

@@ -1,12 +1,15 @@
 ﻿using CommandSystem;
 using PluginAPI.Core;
 using System;
+using System.Collections.Generic;
 
 namespace Mistaken.CommandsExtender.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-internal sealed class SuicideCommandHandler : ICommand
+internal sealed class Suicide : ICommand
 {
+    public static readonly HashSet<string> InSuicidialState = new();
+
     public string Command => "suicide";
 
     public string[] Aliases => Array.Empty<string>();
@@ -20,14 +23,14 @@ internal sealed class SuicideCommandHandler : ICommand
 
         if (player.IsHuman)
         {
-            if (!CommandsHandler.InSuicidialState.Contains(player.UserId))
+            if (!InSuicidialState.Contains(player.UserId))
             {
-                CommandsHandler.InSuicidialState.Add(player.UserId);
+                InSuicidialState.Add(player.UserId);
                 response = Plugin.Translations.SuicideEnter;
             }
             else
             {
-                CommandsHandler.InSuicidialState.Remove(player.UserId);
+                InSuicidialState.Remove(player.UserId);
                 response = Plugin.Translations.SuicideExit;
             }
 

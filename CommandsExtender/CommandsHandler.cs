@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using InventorySystem.Items.Firearms;
+﻿using InventorySystem.Items.Firearms;
 using Mistaken.CommandsExtender.Commands;
 using PlayerRoles;
 using PlayerStatsSystem;
@@ -12,8 +11,6 @@ namespace Mistaken.CommandsExtender;
 
 internal sealed class CommandsHandler
 {
-    public static readonly HashSet<string> InSuicidialState = new();
-
     public CommandsHandler()
     {
         EventManager.RegisterEvents(this);
@@ -30,8 +27,8 @@ internal sealed class CommandsHandler
         if (player is null)
             return;
 
-        TryUnHandcuffCommand.Cooldowns.Remove(player.UserId);
-        InSuicidialState.Remove(player.UserId);
+        TryUncuff.Cooldowns.Remove(player.UserId);
+        Suicide.InSuicidialState.Remove(player.UserId);
     }
 
     [PluginEvent(ServerEventType.PlayerDying)]
@@ -41,13 +38,13 @@ internal sealed class CommandsHandler
             return;
 
         if (target.Role == RoleTypeId.NtfCaptain)
-            TeslaOnCommand._alreadyUsed.Remove(target.UserId);
+            TeslaOn.AlreadyUsed.Remove(target.UserId);
     }
 
     [PluginEvent(ServerEventType.PlayerShotWeapon)]
     private bool Player_Shooting(Player player, Firearm firearm)
     {
-        if (InSuicidialState.Contains(player.UserId))
+        if (Suicide.InSuicidialState.Contains(player.UserId))
         {
             /*if (CustomItem.TryGet(ev.Shooter.CurrentItem, out _))
             {
@@ -57,7 +54,7 @@ internal sealed class CommandsHandler
             }*/
 
             player.Kill(Plugin.Translations.SuicideDeathMessage);
-            InSuicidialState.Remove(player.UserId);
+            Suicide.InSuicidialState.Remove(player.UserId);
             return false;
         }
 
@@ -67,8 +64,8 @@ internal sealed class CommandsHandler
     [PluginEvent(ServerEventType.RoundRestart)]
     private void OnRoundRestart()
     {
-        TeslaOnCommand._alreadyUsed.Clear();
-        TryUnHandcuffCommand.Cooldowns.Clear();
-        InSuicidialState.Clear();
+        TeslaOn.AlreadyUsed.Clear();
+        TryUncuff.Cooldowns.Clear();
+        Suicide.InSuicidialState.Clear();
     }
 }

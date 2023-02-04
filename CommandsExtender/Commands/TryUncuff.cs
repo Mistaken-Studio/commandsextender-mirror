@@ -11,7 +11,7 @@ using Utils.Networking;
 namespace Mistaken.CommandsExtender.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-internal sealed class TryUnHandcuffCommand : ICommand
+internal sealed class TryUncuff : ICommand
 {
     public static readonly Dictionary<string, DateTime> Cooldowns = new();
 

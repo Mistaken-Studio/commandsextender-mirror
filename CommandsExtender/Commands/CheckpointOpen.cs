@@ -9,7 +9,7 @@ using PluginAPI.Core;
 namespace Mistaken.CommandsExtender.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-internal sealed class CheckpointOpenCommand : ICommand
+internal sealed class CheckpointOpen : ICommand
 {
     public string Command => "checkpointopen";
 

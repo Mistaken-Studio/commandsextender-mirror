@@ -18,7 +18,7 @@ using UnityEngine;
 namespace Mistaken.CommandsExtender.Commands;
 
 [CommandHandler(typeof(ClientCommandHandler))]
-internal sealed class HealPlayerCommand : ICommand
+internal sealed class HealPlayer : ICommand
 {
     internal static readonly Dictionary<Player, DateTime> Cooldowns = new();
 
